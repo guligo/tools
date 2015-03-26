@@ -1,0 +1,11 @@
+# Compilation result #
+*.class
+
+# Project files and folders #
+.project
+.classpath
+.settings/
+.svn/
+bin/
+build/
+target/

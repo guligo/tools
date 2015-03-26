@@ -1,0 +1,52 @@
+src/main/java/me/guligo/beans/impl/${tag}Bean.java
+%%%
+package me.guligo.beans.impl;
+
+import me.guligo.beans.Bean;
+
+public class ${tag}Bean extends Bean {
+
+	@Override
+	public void setValue(String value) {
+		super.setValue("${tag}" + value);
+	}
+
+}
+@@@
+src/main/java/me/guligo/tests/beans/impl/${tag}BeanTest.java
+%%%
+package me.guligo.tests.beans.impl;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import me.guligo.beans.Bean;
+import me.guligo.beans.impl.ABean;
+
+public class ABeanTest {
+
+	@Test
+	public void testABean() {
+		Bean bean = new ABean();
+		bean.setValue("Foo");
+		Assert.assertEquals("AFoo", bean.getValue());
+	}
+
+}
+@@@
+pom.xml
+%%%
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>me.guligo.mavenmodularity</groupId>
+	<artifactId>dummy</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+	</dependencies>
+</project>
