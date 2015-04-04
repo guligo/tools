@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import me.guligo.tools.gentool.format.GenTool;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -28,16 +26,31 @@ public class GenToolTest {
 	}
 
 	@After
-	public void tearDown() throws IOException {
-		FileUtils.deleteDirectory(tmpDirectory.toFile());
+	public void tearDown() {
+		try {
+			FileUtils.deleteDirectory(tmpDirectory.toFile());
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
 	@Test
-	public void testGenTool() throws IOException {
+	public void testGenTool1() throws IOException {
 		FileUtils.writeStringToFile(tmpDirectory.resolve("test-gen-tool.gen").toFile(),
 				IOUtils.toString(GenToolTest.class.getResourceAsStream("/test-gen-tool.gen")));
 
-		GenTool genTool = new GenTool(tmpDirectory.resolve("test-gen-tool.gen").toString(), tmpDirectory.toString());
+		GenTool genTool = new GenTool(tmpDirectory.resolve("test-gen-tool.gen"), tmpDirectory);
+		genTool.setParameter("tag", "Foo");
+		genTool.process();
+
+		Assert.assertTrue(Files.exists(tmpDirectory.resolve("src/main/java/me/guligo/beans/impl/FooBean.java")));
+		Assert.assertTrue(Files.exists(tmpDirectory.resolve("src/main/java/me/guligo/tests/beans/impl/FooBeanTest.java")));
+		Assert.assertTrue(Files.exists(tmpDirectory.resolve("pom.xml")));
+	}
+
+	@Test
+	public void testGenTool2() throws IOException {
+		GenTool genTool = new GenTool(GenToolTest.class.getResourceAsStream("/test-gen-tool.gen"), tmpDirectory);
 		genTool.setParameter("tag", "Foo");
 		genTool.process();
 

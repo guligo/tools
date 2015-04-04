@@ -1,11 +1,12 @@
 package me.guligo.tools.gentool.format;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Responsible for processing file of .gen format.
@@ -14,24 +15,31 @@ import org.apache.commons.io.FileUtils;
  */
 public class GenTool {
 
-	private Path getFilePath;
-	private Path contentRoot;
+	private String genContent;
 	private GenParameterProcessor genParamProcessor;
 	private GenFormatProcessor genFormatProcessor;
+	private Path resultRoot;
 
-	public GenTool(String genFilePath, String contentRoot) {
-		this.getFilePath = Paths.get(genFilePath);
-		this.contentRoot = Paths.get(contentRoot);
+	public GenTool(Path genFile, Path resultRoot) throws IOException {
+		this(FileUtils.readFileToString(genFile.toFile()), resultRoot);
+	}
+
+	public GenTool(InputStream genStream, Path resultRoot) throws IOException {
+		this(IOUtils.toString(genStream), resultRoot);
+	}
+
+	public GenTool(String genContent, Path resultRoot) {
+		this.genContent = genContent;
 		this.genParamProcessor = new GenParameterProcessor();
 		this.genFormatProcessor = new GenFormatProcessor();
+		this.resultRoot = resultRoot;
 	}
 
 	public void process() throws IOException {
-		String genFileContent = new String(FileUtils.readFileToString(getFilePath.toFile()));
-		String genContent = genParamProcessor.replaceParameters(genFileContent);
+		String genContent = genParamProcessor.replaceParameters(this.genContent);
 		for (GenEntry genEntry : genFormatProcessor.getEntries(genContent)) {
 			for (String genEntryPath : genEntry.getPaths()) {
-				createContent(contentRoot.resolve(genEntryPath), genEntry.getContent());
+				createContent(resultRoot.resolve(genEntryPath), genEntry.getContent());
 			}
 		}
 	}

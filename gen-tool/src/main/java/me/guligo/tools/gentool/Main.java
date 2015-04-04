@@ -1,6 +1,7 @@
 package me.guligo.tools.gentool;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import me.guligo.tools.gentool.format.GenTool;
 
@@ -18,7 +19,7 @@ public class Main {
 			System.exit(1);
 		}
 
-		GenTool genFileProcessor = new GenTool(args[0], args[1]);
+		GenTool genFileProcessor = new GenTool(args[0], Paths.get(args[1]));
 		for (int i = 2; i < args.length; i++) {
 			genFileProcessor.setParameter(args[i++], args[i]);
 		}
